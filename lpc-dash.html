@@ -138,10 +138,11 @@
         let initialLoad = true;
         const rcaBootstrapModal = new bootstrap.Modal(document.getElementById('rcaModal'));
 
-        // 🔏 Clear Session Logout Function
+        // 🔏 Clear Session Logout Function (Force URL Redirect)
         function logoutUser() {
             if(confirm("Kya aap session log out karna chahte hain?")) {
-                window.location.href = 'index.html';
+                // Window mapping change to absolute root index link
+                window.location.replace('index.html');
             }
         }
 
@@ -178,5 +179,3 @@
 
                     const row = `
                         <tr class="${rowClass}">
-                            <td class="ps-3"><strong>${call.machine}</strong></td>
-                            <td>
