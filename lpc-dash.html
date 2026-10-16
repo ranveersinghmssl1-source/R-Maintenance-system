@@ -26,10 +26,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
         <div class="container-fluid px-3 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
-                <span class="navbar-brand mb-0 h1 fw-bold">⚙️ LPC Plant Maintenance</span>
-                <span class="badge bg-success rounded-pill" id="lpcActiveCount">0 Active Issues</span>
+                <span class="navbar-brand mb-0 h1 fw-bold">⚙️ LPC Plant Maintenance Control</span>
+                <span class="badge bg-success rounded-pill px-3" id="lpcActiveCount">0 Active Issues</span>
             </div>
-            <!-- 🔏 Logout Button -->
+            <!-- Logout Button -->
             <button class="btn btn-outline-light btn-sm fw-bold px-3 logout-btn" onclick="logoutUser()">🚪 Log Out</button>
         </div>
     </nav>
@@ -62,7 +62,7 @@
         </div>
     </div>
 
-    <!-- 📝 Root Cause Analysis & Spare Parts Pop-up Modal -->
+    <!-- Root Cause Analysis & Spare Parts Pop-up Modal -->
     <div class="modal fade" id="rcaModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -86,7 +86,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold text-secondary">Action Taken (Kya Theek Kiya)</label>
-                            <textarea class="form-control" id="modalActionTaken" rows="2" placeholder="Describe mechanical adjustments made..." required></textarea>
+                            <textarea class="form-control" id="modalActionTaken" rows="2" placeholder="Describe adjustments made..." required></textarea>
                         </div>
                         
                         <!-- Spare Parts Fields -->
@@ -119,14 +119,14 @@
         </div>
     </div>
 
-    <!-- Complete Bootstrap JS JavaScript Bundle -->
+    <!-- Complete Bootstrap JS Bundle -->
     <script src="https://jsdelivr.net"></script>
     <!-- Firebase core SDKs -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
     <script>
-        // ⚠️ YAHA APNA FIREBASE CONFIG PASTE KAREIN
+        // ⚠️ YAHA BHI APNA FIREBASE CONFIG PASTE KAREIN
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             databaseURL: "YOUR_DATABASE_URL",
@@ -138,14 +138,14 @@
         let initialLoad = true;
         const rcaBootstrapModal = new bootstrap.Modal(document.getElementById('rcaModal'));
 
-        // 🔏 Clear Session Logout Function (Force URL Redirect)
+        // Clear Session Logout Function
         function logoutUser() {
             if(confirm("Kya aap session log out karna chahte hain?")) {
-                // Window mapping change to absolute root index link
                 window.location.replace('index.html');
             }
         }
 
+        // Realtime Data Receiver Logic
         database.ref('lpc_calls').on('value', (snapshot) => {
             const data = snapshot.val();
             const tableBody = document.getElementById('lpcTableBody');
@@ -169,13 +169,15 @@
                         playAlarm = true;
                         rowClass = 'table-danger';
                         statusBadge = '<span class="badge bg-danger px-2 py-1">🔴 NEW CALL</span>';
-                        actionButtons = `<button class="btn btn-sm btn-warning fw-bold text-dark px-3" onclick="acknowledgeCall('${call.machine}')">🔧 Respond</button>`;
+                        actionButtons = `<button class="btn btn-sm btn-warning fw-bold text-dark px-3 w-100" onclick="acknowledgeCall('${call.machine}')">🔧 Respond</button>`;
                     } 
                     else if (call.status === "ACKNOWLEDGED") {
                         rowClass = 'table-warning';
                         statusBadge = '<span class="badge bg-warning text-dark px-2 py-1">🟡 IN PROGRESS</span>';
-                        actionButtons = `<button class="btn btn-sm btn-success fw-bold px-3" onclick="openRcaModal('${call.machine}')">✅ Complete</button>`;
+                        actionButtons = `<button class="btn btn-sm btn-success fw-bold px-3 w-100" onclick="openRcaModal('${call.machine}')">✅ Complete</button>`;
                     }
 
                     const row = `
                         <tr class="${rowClass}">
+                            <td class="ps-3"><strong>${call.machine}</strong></td>
+                            <td>
