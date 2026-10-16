@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LPC Operator Panel</title>
+    <!-- Premium Bootstrap 5 CSS Framework -->
     <link href="https://jsdelivr.net" rel="stylesheet">
     <style>
         body { background-color: #f4f6f9; font-family: system-ui, -apple-system, sans-serif; }
@@ -11,11 +12,21 @@
         .btn-primary { padding: 12px; font-size: 16px; border-radius: 8px; background-color: #0d6efd; border: none; }
         .btn-primary:hover { background-color: #0b5ed7; }
         .form-select, .form-control { padding: 10px; border-radius: 8px; }
+        .navbar { background-color: #212529; }
     </style>
 </head>
-<body class="py-4">
+<body class="pb-5">
+
+    <!-- Operator Header Navbar with Logout Option -->
+    <nav class="navbar navbar-dark shadow-sm mb-4">
+        <div class="container-fluid px-3 d-flex justify-content-between align-items-center">
+            <span class="navbar-brand mb-0 h1 fw-bold fs-6">🤖 Operator Terminal (LPC)</span>
+            <button class="btn btn-outline-danger btn-sm fw-bold" onclick="window.location.replace('index.html')">🚪 Log Out</button>
+        </div>
+    </nav>
+
     <div class="container" style="max-width: 500px;">
-        <div class="card bg-white mt-3">
+        <div class="card bg-white mt-2">
             <div class="card-header bg-primary text-white text-center py-3 rounded-top">
                 <h4 class="mb-0 fw-bold">⚠️ LPC Andon Call Panel</h4>
                 <small class="opacity-75">C&C Machine Station</small>
@@ -59,11 +70,12 @@
         </div>
     </div>
 
+    <!-- Firebase SDK Scripts -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
     <script>
-        // ⚠️ YAHA APNA FIREBASE CONFIG PASTE KAREIN
+        // ⚠️ YAHA APNA FIREBASE CONFIG PASTE KAREIN (DONO FILES ME EXACT SAME HONA CHAHIYE)
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             databaseURL: "YOUR_DATABASE_URL",
@@ -72,6 +84,7 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // Automatic Shift Detection Logic
         function getActiveShift() {
             const currentHour = new Date().getHours();
             if (currentHour >= 6 && currentHour < 14) { return "Shift A"; } 
@@ -82,6 +95,7 @@
         const currentActiveShift = getActiveShift();
         document.getElementById('detectedShift').innerText = currentActiveShift;
 
+        // Form Submit Handler
         document.getElementById('lpcForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const machine = document.getElementById('machineSelect').value;
@@ -89,15 +103,15 @@
             const remarks = document.getElementById('remarks').value || "No remarks";
             const timeString = new Date().toLocaleTimeString();
 
-            // ✅ Sahi parameters push code framework update
+            // Firebase database update logic path configuration
             database.ref('lpc_calls/' + machine).set({
                 machine: machine,
                 problem: problem,
                 remarks: remarks,
                 timestamp: timeString,
-                startTimestamp: Date.now(), // Timer sync calculations
-                shift: currentActiveShift,   // Shift tracking mapping
-                status: "ACTIVE"             // Default Active status configuration
+                startTimestamp: Date.now(), // Dynamic countdown reference
+                shift: currentActiveShift,   // Shift assignment variables
+                status: "ACTIVE"             // Entry code status marker
             }).then(() => {
                 alert(`LPC Alarm Raised successfully for ${machine}!`);
                 document.getElementById('lpcForm').reset();
