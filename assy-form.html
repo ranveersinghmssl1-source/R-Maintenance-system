@@ -3,21 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASSY One-Click Andon</title>
+    <title>ASSY Control Panel</title>
     <link href="https://jsdelivr.net" rel="stylesheet">
     <style>
-        .andon-btn { height: 150px; font-size: 24px; font-weight: bold; text-transform: uppercase; }
+        body { background-color: #f4f6f9; font-family: system-ui, -apple-system, sans-serif; }
+        .card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .card-header { background-color: #212529 !important; border-top-left-radius: 16px !important; border-top-right-radius: 16px !important; }
+        .andon-btn { 
+            height: 140px; 
+            font-size: 22px; 
+            font-weight: 800; 
+            border-radius: 12px; 
+            border: none; 
+            box-shadow: 0 6px 0 #b02a37; 
+            transition: 0.1s; 
+        }
+        .andon-btn:active { 
+            transform: translateY(6px); 
+            box-shadow: none; 
+        }
+        .btn-conveyor {
+            background-color: #ffc107 !important;
+            color: #212529 !important;
+            box-shadow: 0 6px 0 #d39e00;
+        }
     </style>
 </head>
-<body class="bg-light">
-    <div class="container mt-5" style="max-width: 600px;">
-        <div class="card shadow">
-            <div class="card-header bg-dark text-white text-center">
-                <h4>🔴 ASSY Production Line (One-Click)</h4>
+<body class="py-5">
+    <div class="container" style="max-width: 600px;">
+        <div class="card bg-white shadow">
+            <div class="card-header text-white text-center py-3">
+                <h4 class="mb-0 fw-bold">🔴 ASSY Direct Trigger Interface</h4>
+                <small class="opacity-75">Instant Line Halt System</small>
             </div>
-            <div class="card-body d-grid gap-4 p-4">
-                <button class="btn btn-danger andon-btn" onclick="triggerAssyAlarm('ckt')">🚨 CKT Breakdown</button>
-                <button class="btn btn-warning text-white andon-btn" onclick="triggerAssyAlarm('conveyor')">⚠️ Conveyor Stop</button>
+            <div class="card-body p-4 d-grid gap-4">
+                <button class="btn btn-danger andon-btn text-white" onclick="triggerAssyAlarm('ckt')">
+                    🚨 CKT BREAKDOWN STALL
+                </button>
+                <button class="btn btn-conveyor andon-btn" onclick="triggerAssyAlarm('conveyor')">
+                    ⚠️ CONVEYOR LINE EMERGENCY STOP
+                </button>
             </div>
         </div>
     </div>
@@ -42,7 +67,7 @@
                 timestamp: timeString,
                 startTimestamp: Date.now()
             }).then(() => {
-                alert(`ASSY Alarm Sent Successfully!`);
+                alert(`ASSY Emergency Signal Dispatched Successfully!`);
             });
         }
     </script>
