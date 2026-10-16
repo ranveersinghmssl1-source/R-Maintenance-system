@@ -3,34 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LPC Maintenance Dashboard</title>
+    <title>LPC Pro Maintenance Dashboard</title>
+    <!-- Professional Bootstrap 5 CSS Framework -->
     <link href="https://jsdelivr.net" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .table thead { background-color: #212529; color: #fff; }
+        @keyframes blink { 50% { opacity: 0.4; } }
+        .blink-danger { color: #dc3545 !important; animation: blink 1.0s linear infinite; font-weight: bold; }
+        @media (max-width: 576px) {
+            .navbar-brand { font-size: 16px; }
+            .table th, .table td { font-size: 13px; padding: 10px 6px; }
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-    <nav class="navbar navbar-dark bg-primary shadow-sm mb-3">
-        <div class="container-fluid">
-            <span class="navbar-brand h1 mb-0">⚙️ LPC Maintenance Control</span>
-            <span class="badge bg-danger fs-6" id="lpcActiveCount">0 Active</span>
+    <!-- Top Professional Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
+        <div class="container-fluid px-3">
+            <span class="navbar-brand mb-0 h1 fw-bold">⚙️ LPC Plant Maintenance Dashboard</span>
+            <span class="badge bg-success fs-6 px-3 py-2 rounded-pill" id="lpcActiveCount">0 Active Issues</span>
         </div>
     </nav>
 
     <div class="container-fluid px-3">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 fw-bold d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-secondary fw-bold">Live Breakdown Status Board</h5>
+                <audio id="alertSound" src="https://mixkit.co" preload="auto"></audio>
+            </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-dark">
                             <tr>
-                                <th>Machine</th>
-                                <th>Problem Type</th>
+                                <th class="ps-3">Machine ID</th>
+                                <th>Problem Category</th>
                                 <th>Status</th>
-                                <th>Time</th>
-                                <th>Action</th>
+                                <th>Time Raised</th>
+                                <th>Response Clock</th>
+                                <th class="text-center">Control Action</th>
                             </tr>
                         </thead>
                         <tbody id="lpcTableBody">
-                            <tr><td colspan="5" class="text-center py-4">Running smoothly.</td></tr>
+                            <tr><td colspan="6" class="text-center text-muted py-5 fs-5">All systems operational. No active breakdown calls.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -38,47 +57,56 @@
         </div>
     </div>
 
-    <!-- 📝 Simple Bootstrap Modal Pop-up -->
-    <div class="modal fade" id="rcaModal" data-bs-backdrop="static" tabindex="-1">
+    <!-- 📝 Root Cause Analysis & Spare Parts Pop-up Modal (Hidden by Default) -->
+    <div class="modal fade" id="rcaModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">🛠️ Action & Spare Log</h5>
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-success text-white py-3">
+                    <h5 class="modal-title fw-bold">🛠️ Maintenance Action & Spare Log</h5>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <form id="rcaForm">
                         <input type="hidden" id="modalMachineKey">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Root Cause</label>
+                            <label class="form-label fw-bold text-secondary">Root Cause (Asli Wajah)</label>
                             <select class="form-select" id="modalRootCause" required>
-                                <option value="Wear & Tear">Wear & Tear</option>
-                                <option value="Electrical Issue">Electrical Issue</option>
-                                <option value="Tool Failure">Tool Failure</option>
-                                <option value="Operator Error">Operator Error</option>
+                                <option value="" selected disabled>-- Select Reason --</option>
+                                <option value="Component Wear & Tear">Component Wear & Tear</option>
+                                <option value="Lack of Lubrication">Lack of Lubrication</option>
+                                <option value="Electrical Surge/Fuse">Electrical Surge/Fuse</option>
+                                <option value="Operator Handle Error">Operator Handle Error</option>
+                                <option value="Tooling/Insert Failure">Tooling/Insert Failure</option>
+                                <option value="External Utility Down">External Utility Down</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Action Taken</label>
-                            <textarea class="form-control" id="modalActionTaken" rows="2" required></textarea>
+                            <label class="form-label fw-bold text-secondary">Action Taken (Kya Theek Kiya)</label>
+                            <textarea class="form-control" id="modalActionTaken" rows="2" placeholder="Describe mechanical adjustments made..." required></textarea>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-8">
-                                <label class="form-label fw-bold">Spare Part</label>
-                                <select class="form-select" id="modalSparePart">
-                                    <option value="None">None</option>
-                                    <option value="Bearing">Bearing</option>
-                                    <option value="Insert">Insert</option>
-                                    <option value="Fuse">Fuse</option>
+                        
+                        <!-- Spare Parts Fields -->
+                        <div class="row">
+                            <div class="col-8 mb-3">
+                                <label class="form-label fw-bold text-secondary">Spare Part Used</label>
+                                <select class="form-select" id="modalSparePart" required>
+                                    <option value="None" selected>None (No Spare Needed)</option>
+                                    <option value="Ball Bearing 6204">Ball Bearing 6204</option>
+                                    <option value="CNC Carbide Insert">CNC Carbide Insert</option>
+                                    <option value="Proximity Sensor">Proximity Sensor</option>
+                                    <option value="Electrical Fuse 16A">Electrical Fuse 16A</option>
+                                    <option value="Hydraulic Seal O-Ring">Hydraulic Seal O-Ring</option>
+                                    <option value="V-Belt A-42">V-Belt A-42</option>
                                 </select>
                             </div>
-                            <div class="col-4">
-                                <label class="form-label fw-bold">Qty</label>
-                                <input type="number" class="form-control" id="modalSpareQty" value="0">
+                            <div class="col-4 mb-3">
+                                <label class="form-label fw-bold text-secondary">Quantity</label>
+                                <input type="number" class="form-control" id="modalSpareQty" min="0" value="0" required>
                             </div>
                         </div>
-                        <div class="text-end">
-                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-success">Close Ticket</button>
+
+                        <div class="d-flex gap-2 justify-content-end mt-3">
+                            <button type="button" class="btn btn-light fw-bold px-3" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success fw-bold px-4">Close Ticket ✅</button>
                         </div>
                     </form>
                 </div>
@@ -86,7 +114,9 @@
         </div>
     </div>
 
+    <!-- Complete Bootstrap JS JavaScript Bundle -->
     <script src="https://jsdelivr.net"></script>
+    <!-- Firebase core SDKs -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
@@ -99,80 +129,51 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const rcaModalObj = new bootstrap.Modal(document.getElementById('rcaModal'));
+
+        let initialLoad = true;
+        const rcaBootstrapModal = new bootstrap.Modal(document.getElementById('rcaModal'));
 
         database.ref('lpc_calls').on('value', (snapshot) => {
             const data = snapshot.val();
             const tableBody = document.getElementById('lpcTableBody');
             const countBadge = document.getElementById('lpcActiveCount');
+            const audio = document.getElementById('alertSound');
+            
             tableBody.innerHTML = "";
-            let count = 0;
+            let activeCount = 0;
+            let playAlarm = false;
 
             if (data) {
                 Object.keys(data).forEach(key => {
                     const call = data[key];
-                    count++;
-                    let btn = `<button class="btn btn-sm btn-warning w-100" onclick="acknowledgeCall('${call.machine}')">Respond</button>`;
-                    let badge = '<span class="badge bg-danger">🔴 NEW</span>';
+                    activeCount++;
                     
-                    if (call.status === "ACKNOWLEDGED") {
-                        badge = '<span class="badge bg-warning text-dark">🟡 WIP</span>';
-                        btn = `<button class="btn btn-sm btn-success w-100" onclick="openRcaModal('${call.machine}')">Complete</button>`;
+                    let statusBadge = '';
+                    let rowClass = '';
+                    let actionButtons = '';
+
+                    if (call.status === "ACTIVE") {
+                        playAlarm = true;
+                        rowClass = 'table-danger';
+                        statusBadge = '<span class="badge bg-danger px-2 py-1">🔴 NEW CALL</span>';
+                        actionButtons = `<button class="btn btn-sm btn-warning fw-bold text-dark px-3" onclick="acknowledgeCall('${call.machine}')">🔧 Respond</button>`;
+                    } 
+                    else if (call.status === "ACKNOWLEDGED") {
+                        rowClass = 'table-warning';
+                        statusBadge = '<span class="badge bg-warning text-dark px-2 py-1">🟡 IN PROGRESS</span>';
+                        actionButtons = `<button class="btn btn-sm btn-success fw-bold px-3" onclick="openRcaModal('${call.machine}')">✅ Complete</button>`;
                     }
 
-                    tableBody.innerHTML += `
-                        <tr class="${call.status === 'ACTIVE' ? 'table-danger' : 'table-warning'}">
-                            <td><strong>${call.machine}</strong></td>
-                            <td>${call.problem}</td>
-                            <td>${badge}</td>
+                    const row = `
+                        <tr class="${rowClass}">
+                            <td class="ps-3"><strong>${call.machine}</strong></td>
+                            <td>
+                                <span class="fw-bold">${call.problem}</span><br>
+                                <small class="text-muted">${call.remarks}</small>
+                            </td>
+                            <td>${statusBadge}</td>
                             <td>${call.timestamp}</td>
-                            <td>${btn}</td>
-                        </tr>`;
-                });
-            }
-            countBadge.innerText = count;
-            if(count === 0) {
-                tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Running smoothly.</td></tr>';
-            }
-        });
-
-        function acknowledgeCall(name) {
-            database.ref('lpc_calls/' + name).update({ status: "ACKNOWLEDGED" });
-        }
-
-        function openRcaModal(name) {
-            document.getElementById('modalMachineKey').value = name;
-            document.getElementById('rcaForm').reset();
-            rcaModalObj.show();
-        }
-
-        document.getElementById('rcaForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('modalMachineKey').value;
-            const cause = document.getElementById('modalRootCause').value;
-            const action = document.getElementById('modalActionTaken').value;
-            const spare = document.getElementById('modalSparePart').value;
-            const qty = document.getElementById('modalSpareQty').value;
-
-            database.ref('lpc_calls/' + name).once('value').then((snapshot) => {
-                const currentData = snapshot.val();
-                if (currentData) {
-                    database.ref('history_logs').push({
-                        section: "LPC",
-                        machine: currentData.machine,
-                        problem: currentData.problem,
-                        rootCause: cause,
-                        actionTaken: action,
-                        sparePartUsed: spare,
-                        spareQuantity: qty,
-                        timestamp: currentData.timestamp
-                    }).then(() => {
-                        database.ref('lpc_calls/' + name).remove();
-                        rcaModalObj.hide();
-                    });
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+                            <td>
+                                <span class="fw-bold timer-clock" 
+                                      data-start="${call.startTimestamp}" 
+                                      data-status="${call.status}" 
