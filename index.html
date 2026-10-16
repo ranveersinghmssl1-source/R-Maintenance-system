@@ -4,33 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andon System Login</title>
+    <!-- Premium Bootstrap 5 -->
     <link href="https://jsdelivr.net" rel="stylesheet">
     <style>
-        body { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); height: 100vh; display: flex; align-items: center; }
+        body { 
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .card { 
+            border: none; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25); 
+        }
+        .card-header {
+            background: #212529 !important;
+            border-top-left-radius: 16px !important;
+            border-top-right-radius: 16px !important;
+        }
+        .btn-dark {
+            background-color: #212529;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .btn-dark:hover {
+            background-color: #343a40;
+            transform: translateY(-2px);
+        }
+        .form-control {
+            padding: 12px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="card shadow-lg border-0 rounded-3">
-                    <div class="card-header bg-dark text-white text-center py-3">
-                        <h4 class="mb-0">🚨 Andon System Login</h4>
+            <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+                <div class="card bg-white p-2">
+                    <div class="card-header text-white text-center py-4">
+                        <h3 class="mb-1 fw-bold">🚨 FACTORY ANDON</h3>
+                        <small class="opacity-75">Central Maintenance Gate</small>
                     </div>
                     <div class="card-body p-4">
                         <form id="loginForm">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">User Role ID</label>
-                                <input type="text" class="form-control" id="userID" placeholder="Enter Role ID" required autocomplete="off">
-                                <div class="form-text text-muted">Roles: lpc_op, lpc_maint, assy_op, assy_maint, plant_manager</div>
+                                <label class="form-label fw-bold text-secondary">User Role ID</label>
+                                <input type="text" class="form-control" id="userID" placeholder="e.g., lpc_op, lpc_maint" required autocomplete="off">
+                                <div class="form-text text-muted">Enter assigned department identity code.</div>
                             </div>
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Password</label>
+                                <label class="form-label fw-bold text-secondary">Access Password</label>
                                 <input type="password" class="form-control" id="password" value="12345" required>
                             </div>
-                            <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">LOG IN</button>
+                            <button type="submit" class="btn btn-dark w-100 fw-bold shadow-sm">SECURE LOG IN</button>
                         </form>
-                        <div id="errorMessage" class="text-danger text-center mt-3 fw-bold" style="display: none;"></div>
+                        <div id="errorMessage" class="alert alert-danger text-center mt-3 fw-bold p-2 style-none" style="display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -52,11 +86,11 @@
                 else if (user === 'assy_maint') { window.location.href = 'assy-dash.html'; }
                 else if (user === 'plant_manager') { window.location.href = 'analytics.html'; }
                 else {
-                    errorDiv.innerText = "❌ Role ID nahi mila!";
+                    errorDiv.innerText = "❌ Role ID not found!";
                     errorDiv.style.display = 'block';
                 }
             } else {
-                errorDiv.innerText = "❌ Galat Password!";
+                errorDiv.innerText = "❌ Incorrect Password!";
                 errorDiv.style.display = 'block';
             }
         });
