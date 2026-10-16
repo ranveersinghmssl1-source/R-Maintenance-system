@@ -89,17 +89,20 @@
             const remarks = document.getElementById('remarks').value || "No remarks";
             const timeString = new Date().toLocaleTimeString();
 
+            // ✅ Sahi parameters push code framework update
             database.ref('lpc_calls/' + machine).set({
                 machine: machine,
                 problem: problem,
                 remarks: remarks,
                 timestamp: timeString,
-                startTimestamp: Date.now(),
-                shift: currentActiveShift,
-                status: "ACTIVE"
+                startTimestamp: Date.now(), // Timer sync calculations
+                shift: currentActiveShift,   // Shift tracking mapping
+                status: "ACTIVE"             // Default Active status configuration
             }).then(() => {
                 alert(`LPC Alarm Raised successfully for ${machine}!`);
                 document.getElementById('lpcForm').reset();
+            }).catch((error) => {
+                alert("Database Error: " + error.message);
             });
         });
     </script>
